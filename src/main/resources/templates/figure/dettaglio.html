@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles(${figure.nome})}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+
+<main class="container">
+    <div th:replace="~{fragments/base :: messaggi}"></div>
+
+    <div class="dettaglio">
+        <div class="dettaglio-immagine">
+            <img th:if="${figure.immagine}" th:src="${figure.immagine}" th:alt="${figure.nome}"/>
+        </div>
+
+        <div class="dettaglio-testo">
+            <h1 th:text="${figure.nome}">nome</h1>
+            <span class="badge" th:if="${figure.edizioneLimitata}">Edizione limitata</span>
+
+            <dl>
+                <dt>Azienda</dt>
+                <dd><a th:href="@{/aziende/{id}(id=${figure.azienda.id})}" th:text="${figure.azienda.nome}">azienda</a></dd>
+                <dt>Serie</dt>
+                <dd><a th:href="@{/serie/{id}(id=${figure.serie.id})}" th:text="${figure.serie.nome}">serie</a></dd>
+                <dt>Data di uscita</dt>
+                <dd th:text="${#temporals.format(figure.dataUscita, 'dd/MM/yyyy')}">data</dd>
+                <dt>Altezza</dt>
+                <dd th:text="${figure.altezza} + ' cm'">altezza</dd>
+                <dt>Materiale</dt>
+                <dd th:text="${figure.materiale}">materiale</dd>
+                <dt>Prezzo</dt>
+                <dd th:text="${#numbers.formatDecimal(figure.prezzo, 1, 2)} + ' EUR'">prezzo</dd>
+                <dt>Voto medio</dt>
+                <dd th:text="${mediaVoti != null ? #numbers.formatDecimal(mediaVoti, 1, 1) + ' / 5' : 'nessuna recensione'}">-</dd>
+            </dl>
+
+            <p th:text="${figure.descrizione}">descrizione</p>
+
+            <div th:if="${credenziali != null and credenziali.admin}" class="azioni">
+                <a class="bottone secondario" th:href="@{/admin/figure/{id}/modifica(id=${figure.id})}">Modifica</a>
+                <form th:action="@{/admin/figure/{id}/elimina(id=${figure.id})}" method="post" class="inline-form">
+                    <button type="submit" class="bottone pericolo">Elimina</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aggiunta alla collezione: solo utenti autenticati -->
+    <section th:if="${userDetails != null and inCollezione == false}">
+        <h2>Aggiungi alla tua collezione</h2>
+        <form th:action="@{/collezione/aggiungi/{id}(id=${figure.id})}" method="post" class="form-inline">
+            <select name="stato">
+                <option value="POSSEDUTA">Posseduta</option>
+                <option value="WISHLIST">Wishlist</option>
+                <option value="PREORDINE">Preordine</option>
+            </select>
+            <input type="number" name="quantita" value="1" min="1"/>
+            <input type="text" name="note" placeholder="Note (opzionale)"/>
+            <button type="submit" class="bottone">Aggiungi</button>
+        </form>
+    </section>
+    <p th:if="${inCollezione == true}" class="alert successo">Questa figure e' gia' nella tua collezione.</p>
+
+    <section>
+        <h2>Recensioni</h2>
+
+        <article class="recensione" th:each="r : ${recensioni}">
+            <h3 th:text="${r.titolo}">titolo</h3>
+            <p class="meta">
+                <span th:text="${r.voto} + '/5'">voto</span> &mdash;
+                <span th:text="${r.autore.nomeCompleto}">autore</span> &mdash;
+                <span th:text="${#temporals.format(r.data, 'dd/MM/yyyy')}">data</span>
+            </p>
+            <p th:text="${r.testo}">testo</p>
+            <div class="azioni"
+                 th:if="${credenziali != null and (credenziali.user.id == r.autore.id or credenziali.admin)}">
+                <a th:if="${credenziali.user.id == r.autore.id}"
+                   th:href="@{/recensioni/{id}/modifica(id=${r.id})}">Modifica</a>
+                <form th:action="@{/recensioni/{id}/elimina(id=${r.id})}" method="post" class="inline-form">
+                    <button type="submit" class="link-button pericolo">Elimina</button>
+                </form>
+            </div>
+        </article>
+        <p th:if="${#lists.isEmpty(recensioni)}">Nessuna recensione. Scrivi la prima!</p>
+
+        <div th:if="${userDetails != null and haGiaRecensito == false}">
+            <h3>Scrivi una recensione</h3>
+            <form th:action="@{/figure/{id}/recensioni(id=${figure.id})}"
+                  th:object="${nuovaRecensione}" method="post" class="form">
+                <label for="titolo">Titolo</label>
+                <input type="text" id="titolo" th:field="*{titolo}"/>
+                <span class="errore-campo" th:if="${#fields.hasErrors('titolo')}" th:errors="*{titolo}"></span>
+
+                <label for="voto">Voto (1-5)</label>
+                <input type="number" id="voto" min="1" max="5" th:field="*{voto}"/>
+                <span class="errore-campo" th:if="${#fields.hasErrors('voto')}" th:errors="*{voto}"></span>
+
+                <label for="testo">Testo</label>
+                <textarea id="testo" rows="5" th:field="*{testo}"></textarea>
+                <span class="errore-campo" th:if="${#fields.hasErrors('testo')}" th:errors="*{testo}"></span>
+
+                <button type="submit" class="bottone">Pubblica</button>
+            </form>
+        </div>
+        <p th:if="${haGiaRecensito == true}">Hai gia' recensito questa figure.</p>
+        <p th:if="${userDetails == null}"><a th:href="@{/login}">Accedi</a> per scrivere una recensione.</p>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

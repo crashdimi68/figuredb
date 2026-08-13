@@ -1,0 +1,21 @@
+IMMAGINI DELLE FIGURE
+=====================
+
+Una cartella per ogni figure. Il nome della cartella deve coincidere con la
+colonna "cartellaImmagini" del file src/main/resources/dati/figure.csv
+
+    figure/
+      rufy-nendoroid/
+        01.jpg        <- questa viene mostrata sul sito (prima in ordine alfabetico)
+        02.jpg
+      nezuko-pop-up-parade/
+        01.jpg
+      sephiroth-statua/
+        01.jpg
+
+Formati accettati: jpg, jpeg, png, webp, gif
+
+Usa nomi di cartella in minuscolo, senza spazi ne' accenti: separa le parole
+con il trattino.
+
+Ridimensiona le foto a 600-800 pixel di lato prima di aggiungerle al progetto.

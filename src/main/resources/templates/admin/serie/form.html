@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Nuova serie')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+<main class="container stretto">
+    <h1>Nuova serie</h1>
+    <p class="alert errore" th:if="${errore}" th:text="${errore}"></p>
+
+    <form th:object="${serieForm}" th:action="@{/admin/serie/nuova}" method="post" class="form">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" th:field="*{nome}"/>
+        <span class="errore-campo" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
+
+        <label for="tipo">Tipo</label>
+        <select id="tipo" th:field="*{tipo}">
+            <option th:each="t : ${tipi}" th:value="${t}" th:text="${t}"></option>
+        </select>
+
+        <label for="logo">URL logo</label>
+        <input type="text" id="logo" th:field="*{logo}"/>
+
+        <label for="descrizione">Descrizione</label>
+        <textarea id="descrizione" rows="4" th:field="*{descrizione}"></textarea>
+
+        <button type="submit" class="bottone">Salva</button>
+    </form>
+</main>
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

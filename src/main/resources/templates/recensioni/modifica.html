@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Modifica recensione')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+<main class="container stretto">
+    <h1>Modifica la tua recensione</h1>
+    <form th:action="@{/recensioni/{id}/modifica(id=${recensione.id})}"
+          th:object="${recensione}" method="post" class="form">
+        <label for="titolo">Titolo</label>
+        <input type="text" id="titolo" th:field="*{titolo}"/>
+        <span class="errore-campo" th:if="${#fields.hasErrors('titolo')}" th:errors="*{titolo}"></span>
+
+        <label for="voto">Voto (1-5)</label>
+        <input type="number" id="voto" min="1" max="5" th:field="*{voto}"/>
+        <span class="errore-campo" th:if="${#fields.hasErrors('voto')}" th:errors="*{voto}"></span>
+
+        <label for="testo">Testo</label>
+        <textarea id="testo" rows="6" th:field="*{testo}"></textarea>
+        <span class="errore-campo" th:if="${#fields.hasErrors('testo')}" th:errors="*{testo}"></span>
+
+        <button type="submit" class="bottone">Salva</button>
+    </form>
+</main>
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

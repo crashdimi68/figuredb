@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Accedi')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+
+<main class="container stretto">
+    <h1>Accedi</h1>
+    <p class="alert errore" th:if="${param.error}">Username o password non corretti.</p>
+    <p class="alert successo" th:if="${param.logout}">Disconnessione effettuata.</p>
+
+    <form th:action="@{/login}" method="post" class="form">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autofocus/>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required/>
+
+        <button type="submit" class="bottone">Accedi</button>
+    </form>
+    <p>Non hai un account? <a th:href="@{/register}">Registrati</a>.</p>
+</main>
+
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

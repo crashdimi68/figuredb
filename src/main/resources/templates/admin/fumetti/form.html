@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Nuovo fumetto')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+<main class="container stretto">
+    <h1>Nuovo fumetto</h1>
+    <p class="alert errore" th:if="${errore}" th:text="${errore}"></p>
+
+    <form th:object="${fumetto}" th:action="@{/admin/fumetti/nuovo}" method="post" class="form">
+        <label for="titolo">Titolo</label>
+        <input type="text" id="titolo" th:field="*{titolo}"/>
+        <span class="errore-campo" th:if="${#fields.hasErrors('titolo')}" th:errors="*{titolo}"></span>
+
+        <label for="isbn">ISBN</label>
+        <input type="text" id="isbn" th:field="*{isbn}"/>
+        <span class="errore-campo" th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}"></span>
+
+        <label for="anno">Anno</label>
+        <input type="number" id="anno" th:field="*{anno}"/>
+        <span class="errore-campo" th:if="${#fields.hasErrors('anno')}" th:errors="*{anno}"></span>
+
+        <label for="genere">Genere</label>
+        <input type="text" id="genere" th:field="*{genere}"/>
+        <span class="errore-campo" th:if="${#fields.hasErrors('genere')}" th:errors="*{genere}"></span>
+
+        <label for="prezzo">Prezzo (EUR)</label>
+        <input type="number" step="0.01" id="prezzo" th:field="*{prezzo}"/>
+        <span class="errore-campo" th:if="${#fields.hasErrors('prezzo')}" th:errors="*{prezzo}"></span>
+
+        <label for="serieId">Serie</label>
+        <select id="serieId" name="serieId">
+            <option th:each="s : ${serie}" th:value="${s.id}" th:text="${s.nome}"></option>
+        </select>
+
+        <label for="scrittoreId">Scrittore</label>
+        <select id="scrittoreId" name="scrittoreId">
+            <option th:each="s : ${scrittori}" th:value="${s.id}" th:text="${s.nomeCompleto}"></option>
+        </select>
+
+        <label for="disegnatoriIds">Disegnatori (selezione multipla)</label>
+        <select id="disegnatoriIds" name="disegnatoriIds" multiple size="5">
+            <option th:each="d : ${disegnatori}" th:value="${d.id}" th:text="${d.nomeCompleto}"></option>
+        </select>
+
+        <label for="editoreId">Editore</label>
+        <select id="editoreId" name="editoreId">
+            <option th:each="e : ${editori}" th:value="${e.id}" th:text="${e.nome}"></option>
+        </select>
+
+        <label for="immagine">Copertina</label>
+        <input type="text" id="immagine" th:field="*{immagine}"
+               placeholder="nome-cartella  oppure  /images/fumetti/nome-cartella/01.jpg"/>
+        <span class="aiuto-campo">Scrivi il nome della cartella dentro
+            <code>static/images/fumetti/</code>: viene usata la prima immagine che contiene.</span>
+
+        <label class="checkbox">
+            <input type="checkbox" th:field="*{variant}"/> Edizione variant
+        </label>
+
+        <button type="submit" class="bottone">Salva</button>
+    </form>
+</main>
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

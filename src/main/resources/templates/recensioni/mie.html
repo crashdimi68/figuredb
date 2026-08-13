@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Le mie recensioni')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+<main class="container">
+    <div th:replace="~{fragments/base :: messaggi}"></div>
+    <h1>Le mie recensioni</h1>
+    <article class="recensione" th:each="r : ${recensioni}">
+        <h3>
+            <a th:href="@{/figure/{id}(id=${r.figure.id})}" th:text="${r.figure.nome}">figure</a>
+            &mdash; <span th:text="${r.titolo}">titolo</span>
+        </h3>
+        <p class="meta">
+            <span th:text="${r.voto} + '/5'">voto</span> &mdash;
+            <span th:text="${#temporals.format(r.data, 'dd/MM/yyyy')}">data</span>
+        </p>
+        <p th:text="${r.testo}">testo</p>
+        <div class="azioni">
+            <a th:href="@{/recensioni/{id}/modifica(id=${r.id})}">Modifica</a>
+            <form th:action="@{/recensioni/{id}/elimina(id=${r.id})}" method="post" class="inline-form">
+                <button type="submit" class="link-button pericolo">Elimina</button>
+            </form>
+        </div>
+    </article>
+    <p th:if="${#lists.isEmpty(recensioni)}">Non hai ancora scritto recensioni.</p>
+</main>
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

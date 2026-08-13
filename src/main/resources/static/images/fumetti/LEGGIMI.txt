@@ -1,0 +1,23 @@
+COPERTINE DEI FUMETTI
+=====================
+
+Una cartella per ogni fumetto. Il nome della cartella deve coincidere con la
+colonna "cartellaImmagini" del file src/main/resources/dati/fumetti.csv
+
+    fumetti/
+      OnePiece_vol1/
+        01.jpg        <- questa viene mostrata (prima in ordine alfabetico)
+      OnePiece_vol2/
+        01.jpg
+
+Formati accettati: jpg, jpeg, png, webp, gif
+
+Usa nomi di cartella senza spazi ne' accenti: separa le parole con il trattino
+o con l'underscore.
+
+Le copertine dei fumetti sono verticali, in genere circa 2:3 (per esempio
+600x900 pixel). Nell'elenco vengono mostrate come miniatura, nella pagina di
+dettaglio a dimensione piena.
+
+Se la cartella manca o e' vuota, il fumetto resta senza copertina e il sito
+continua a funzionare.

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Errore')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+
+<!--
+  Pagina di errore predefinita di Spring Boot.
+  Il framework la cerca con questo nome esatto (error.html) quando nessun
+  @ExceptionHandler ha gestito l'eccezione. Senza questo file comparirebbe la
+  "Whitelabel Error Page", la schermata grezza di default.
+  Gli attributi status, error, message e path li fornisce Spring.
+-->
+<main class="container stretto">
+    <h1 th:text="'Errore ' + ${status}">Errore</h1>
+
+    <p th:switch="${status}">
+        <span th:case="404">La pagina che cerchi non esiste.</span>
+        <span th:case="403">Non hai i permessi per accedere a questa pagina.</span>
+        <span th:case="401">Devi accedere per vedere questa pagina.</span>
+        <span th:case="500">Si e' verificato un errore imprevisto sul server.</span>
+        <span th:case="*" th:text="${error}">Errore</span>
+    </p>
+
+    <p class="meta" th:if="${message != null and !#strings.isEmpty(message)}"
+       th:text="${message}">dettaglio</p>
+    <p class="meta" th:if="${path}" th:text="'Indirizzo richiesto: ' + ${path}">percorso</p>
+
+    <p>
+        <a class="bottone" th:href="@{/}">Torna alla home</a>
+        <a class="bottone secondario" th:href="@{/catalogo}">Vai al catalogo</a>
+    </p>
+</main>
+
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

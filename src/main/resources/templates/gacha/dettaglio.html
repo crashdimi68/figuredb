@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles(${gacha.nome})}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+
+<main class="container">
+    <h1 th:text="${gacha.nome}">gacha</h1>
+
+    <!-- Stessa struttura a due colonne usata dal dettaglio di figure e fumetti:
+         immagine a sinistra, dati a destra. -->
+    <div class="dettaglio">
+        <div class="dettaglio-immagine">
+            <img th:if="${gacha.immagine}" th:src="${gacha.immagine}" th:alt="${gacha.nome}"/>
+        </div>
+
+        <div class="dettaglio-testo">
+            <dl>
+                <dt>Azienda</dt>
+                <dd><a th:href="@{/aziende/{id}(id=${gacha.azienda.id})}"
+                       th:text="${gacha.azienda.nome}">azienda</a></dd>
+                <dt>Serie</dt>
+                <dd><a th:href="@{/serie/{id}(id=${gacha.serie.id})}"
+                       th:text="${gacha.serie.nome}">serie</a></dd>
+                <dt>Data di uscita</dt>
+                <dd th:text="${#temporals.format(gacha.dataUscita, 'dd/MM/yyyy')}">data</dd>
+                <dt>Prezzo</dt>
+                <dd th:text="${#numbers.formatDecimal(gacha.prezzo, 1, 2)} + ' EUR'">prezzo</dd>
+            </dl>
+
+            <p th:text="${gacha.descrizione}">descrizione</p>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

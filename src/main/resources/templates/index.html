@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Home')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+
+<main class="container">
+    <section class="hero">
+        <h1>Il database delle figure da collezione</h1>
+        <p>Cataloga figure, fumetti e serie gacha. Costruisci la tua collezione e condividi le tue recensioni.</p>
+        <a class="bottone" th:href="@{/catalogo}">Esplora il catalogo</a>
+    </section>
+
+    <section>
+        <h2>Ultime uscite</h2>
+        <div class="griglia">
+            <article class="card" th:each="f : ${ultimeUscite}">
+                <a th:href="@{/figure/{id}(id=${f.id})}">
+                    <img th:if="${f.immagine}" th:src="${f.immagine}" th:alt="${f.nome}"/>
+                    <div class="card-corpo">
+                        <h3 th:text="${f.nome}">Nome figure</h3>
+                        <p class="meta" th:text="${f.azienda.nome} + ' - ' + ${f.serie.nome}">azienda - serie</p>
+                        <p class="prezzo" th:text="${#numbers.formatDecimal(f.prezzo, 1, 2)} + ' EUR'">0,00</p>
+                        <span class="badge" th:if="${f.edizioneLimitata}">Edizione limitata</span>
+                    </div>
+                </a>
+            </article>
+            <p th:if="${#lists.isEmpty(ultimeUscite)}">Nessuna figure a catalogo.</p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Serie</h2>
+        <ul class="lista-inline">
+            <li th:each="s : ${serie}">
+                <a th:href="@{/serie/{id}(id=${s.id})}" th:text="${s.nome}">serie</a>
+            </li>
+        </ul>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

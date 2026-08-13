@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Amministrazione')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+<main class="container">
+    <h1>Amministrazione</h1>
+    <div class="griglia-statistiche">
+        <div class="statistica"><span th:text="${numeroFigure}">0</span><p>Figure</p></div>
+        <div class="statistica"><span th:text="${numeroFumetti}">0</span><p>Fumetti</p></div>
+        <div class="statistica"><span th:text="${numeroSerie}">0</span><p>Serie</p></div>
+        <div class="statistica"><span th:text="${numeroAziende}">0</span><p>Aziende</p></div>
+    </div>
+    <h2>Operazioni</h2>
+    <ul class="lista">
+        <li><a th:href="@{/admin/figure}">Gestione catalogo figure</a></li>
+        <li><a th:href="@{/admin/figure/nuova}">Inserisci una nuova figure</a></li>
+        <li><a th:href="@{/admin/fumetti/nuovo}">Inserisci un nuovo fumetto</a></li>
+        <li><a th:href="@{/admin/serie/nuova}">Crea una nuova serie</a></li>
+        <li><a th:href="@{/admin/aziende/nuova}">Registra una nuova azienda</a></li>
+    </ul>
+</main>
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

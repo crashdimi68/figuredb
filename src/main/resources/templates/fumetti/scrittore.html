@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles(${scrittore.nomeCompleto})}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+<main class="container">
+    <h1 th:text="${scrittore.nomeCompleto}">scrittore</h1>
+    <dl>
+        <dt>Data di nascita</dt>
+        <dd th:text="${#temporals.format(scrittore.dataNascita, 'dd/MM/yyyy')}">data</dd>
+        <dt>Paese</dt><dd th:text="${scrittore.paese}">paese</dd>
+    </dl>
+    <h2>Fumetti scritti</h2>
+    <ul class="lista">
+        <li th:each="f : ${scrittore.fumetti}">
+            <a th:href="@{/fumetti/{id}(id=${f.id})}" th:text="${f.titolo} + ' (' + ${f.anno} + ')'">titolo</a>
+        </li>
+    </ul>
+    <p th:if="${#lists.isEmpty(scrittore.fumetti)}">Nessun fumetto registrato.</p>
+</main>
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

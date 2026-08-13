@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Figure')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+
+<main class="container">
+    <h1>Tutte le figure</h1>
+    <p class="sottotitolo">Per la ricerca con filtri usa il <a th:href="@{/catalogo}">catalogo React</a>.</p>
+
+    <div class="griglia">
+        <article class="card" th:each="f : ${figure}">
+            <a th:href="@{/figure/{id}(id=${f.id})}">
+                <img th:if="${f.immagine}" th:src="${f.immagine}" th:alt="${f.nome}"/>
+                <div class="card-corpo">
+                    <h3 th:text="${f.nome}">nome</h3>
+                    <p class="meta" th:text="${f.azienda.nome} + ' - ' + ${f.serie.nome}">azienda</p>
+                    <p class="prezzo" th:text="${#numbers.formatDecimal(f.prezzo, 1, 2)} + ' EUR'">prezzo</p>
+                    <span class="badge" th:if="${f.edizioneLimitata}">Edizione limitata</span>
+                </div>
+            </a>
+        </article>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

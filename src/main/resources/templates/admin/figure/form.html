@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Figure')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+<main class="container stretto">
+    <h1 th:text="${figure.id == null} ? 'Nuova figure' : 'Modifica figure'">Figure</h1>
+    <p class="alert errore" th:if="${errore}" th:text="${errore}"></p>
+
+    <form th:object="${figure}" method="post"
+          th:action="${figure.id == null} ? @{/admin/figure/nuova} : @{/admin/figure/{id}/modifica(id=${figure.id})}"
+          class="form">
+
+        <input type="hidden" th:field="*{id}"/>
+
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" th:field="*{nome}"/>
+        <span class="errore-campo" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
+
+        <label for="aziendaId">Azienda</label>
+        <select id="aziendaId" name="aziendaId">
+            <option th:each="a : ${aziende}" th:value="${a.id}" th:text="${a.nome}"
+                    th:selected="${figure.azienda != null and figure.azienda.id == a.id}"></option>
+        </select>
+
+        <label for="serieId">Serie</label>
+        <select id="serieId" name="serieId">
+            <option th:each="s : ${serie}" th:value="${s.id}" th:text="${s.nome}"
+                    th:selected="${figure.serie != null and figure.serie.id == s.id}"></option>
+        </select>
+
+        <label for="dataUscita">Data di uscita</label>
+        <input type="date" id="dataUscita" th:field="*{dataUscita}"/>
+        <span class="errore-campo" th:if="${#fields.hasErrors('dataUscita')}" th:errors="*{dataUscita}"></span>
+
+        <label for="altezza">Altezza (cm)</label>
+        <input type="number" step="0.1" id="altezza" th:field="*{altezza}"/>
+        <span class="errore-campo" th:if="${#fields.hasErrors('altezza')}" th:errors="*{altezza}"></span>
+
+        <label for="materiale">Materiale</label>
+        <select id="materiale" th:field="*{materiale}">
+            <option th:each="m : ${materiali}" th:value="${m}" th:text="${m}"></option>
+        </select>
+
+        <label for="prezzo">Prezzo (EUR)</label>
+        <input type="number" step="0.01" id="prezzo" th:field="*{prezzo}"/>
+        <span class="errore-campo" th:if="${#fields.hasErrors('prezzo')}" th:errors="*{prezzo}"></span>
+
+        <label for="immagine">Immagine</label>
+        <input type="text" id="immagine" th:field="*{immagine}"
+               placeholder="nome-cartella  oppure  /images/figure/nome-cartella/01.jpg"/>
+        <span class="aiuto-campo">Scrivi il nome della cartella dentro
+            <code>static/images/figure/</code>: viene usata la prima immagine che contiene.
+            In alternativa puoi incollare un percorso completo o un URL.</span>
+
+        <label for="descrizione">Descrizione</label>
+        <textarea id="descrizione" rows="4" th:field="*{descrizione}"></textarea>
+
+        <label class="checkbox">
+            <input type="checkbox" th:field="*{edizioneLimitata}"/> Edizione limitata
+        </label>
+
+        <button type="submit" class="bottone">Salva</button>
+    </form>
+</main>
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

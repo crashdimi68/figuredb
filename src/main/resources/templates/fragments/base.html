@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="headerfiles(titolo)">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="'FigureDB - ' + ${titolo}">FigureDB</title>
+    <link th:href="@{/css/style.css}" rel="stylesheet"/>
+</head>
+
+<body>
+
+<header th:fragment="intestazione">
+    <nav class="navbar">
+        <a class="brand" th:href="@{/}">
+            <img th:src="@{/images/logo.png}" alt="FigureDB - torna alla home"/>
+        </a>
+        <ul class="menu">
+            <li><a th:href="@{/catalogo}">Catalogo</a></li>
+            <li><a th:href="@{/serie}">Serie</a></li>
+            <li><a th:href="@{/fumetti}">Fumetti</a></li>
+            <li><a th:href="@{/aziende}">Aziende</a></li>
+            <li><a th:href="@{/gacha}">Gacha</a></li>
+        </ul>
+        <ul class="menu right">
+            <li th:if="${userDetails != null}">
+                <a th:href="@{/collezione}">La mia collezione</a>
+            </li>
+            <li th:if="${userDetails != null}">
+                <a th:href="@{/le-mie-recensioni}">Le mie recensioni</a>
+            </li>
+            <li th:if="${credenziali != null and credenziali.admin}">
+                <a class="admin-link" th:href="@{/admin}">Amministrazione</a>
+            </li>
+            <li th:if="${userDetails == null}"><a th:href="@{/login}">Accedi</a></li>
+            <li th:if="${userDetails == null}"><a th:href="@{/register}">Registrati</a></li>
+            <li th:if="${userDetails != null}">
+                <form th:action="@{/logout}" method="post" class="inline-form">
+                    <span class="utente" th:text="${userDetails.username}">utente</span>
+                    <button type="submit" class="link-button">Esci</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<div th:fragment="messaggi" class="messaggi">
+    <p class="alert successo" th:if="${successo}" th:text="${successo}"></p>
+    <p class="alert errore" th:if="${errore}" th:text="${errore}"></p>
+</div>
+
+<footer th:fragment="fondo">
+    <p>FigureDB &mdash; progetto per il corso di Sistemi Informativi su Web, Universita' Roma Tre</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles(${serie.nome})}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+
+<main class="container">
+    <h1 th:text="${serie.nome}">Serie</h1>
+    <p class="meta" th:text="${serie.tipo}">tipo</p>
+    <p th:text="${serie.descrizione}">descrizione</p>
+
+    <section>
+        <h2>Personaggi</h2>
+        <ul class="lista">
+            <li th:each="p : ${serie.personaggi}">
+                <strong th:text="${p.nome}">nome</strong>
+                <span th:text="${p.descrizione}">descrizione</span>
+            </li>
+        </ul>
+        <p th:if="${#lists.isEmpty(serie.personaggi)}">Nessun personaggio registrato.</p>
+    </section>
+
+    <section>
+        <h2>Fumetti della serie</h2>
+        <table class="tabella" th:if="${not #lists.isEmpty(fumetti)}">
+            <thead>
+            <tr><th>Titolo</th><th>Anno</th><th>Scrittore</th><th>Editore</th><th>Prezzo</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="f : ${fumetti}">
+                <td><a th:href="@{/fumetti/{id}(id=${f.id})}" th:text="${f.titolo}">titolo</a></td>
+                <td th:text="${f.anno}">anno</td>
+                <td th:text="${f.scrittore.nomeCompleto}">scrittore</td>
+                <td th:text="${f.editore.nome}">editore</td>
+                <td th:text="${#numbers.formatDecimal(f.prezzo, 1, 2)} + ' EUR'">prezzo</td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${#lists.isEmpty(fumetti)}">Nessun fumetto per questa serie.</p>
+    </section>
+
+    <section>
+        <h2>Figure della serie</h2>
+        <div class="griglia">
+            <article class="card" th:each="f : ${figure}">
+                <a th:href="@{/figure/{id}(id=${f.id})}">
+                    <img th:if="${f.immagine}" th:src="${f.immagine}" th:alt="${f.nome}"/>
+                    <div class="card-corpo">
+                        <h3 th:text="${f.nome}">nome</h3>
+                        <p class="meta" th:text="${f.azienda.nome}">azienda</p>
+                        <p class="prezzo" th:text="${#numbers.formatDecimal(f.prezzo, 1, 2)} + ' EUR'">prezzo</p>
+                    </div>
+                </a>
+            </article>
+        </div>
+        <p th:if="${#lists.isEmpty(figure)}">Nessuna figure per questa serie.</p>
+    </section>
+
+    <section>
+        <h2>Serie gacha</h2>
+        <div class="griglia">
+            <article class="card" th:each="g : ${gacha}">
+                <a th:href="@{/gacha/{id}(id=${g.id})}">
+                    <img th:if="${g.immagine}" th:src="${g.immagine}" th:alt="${g.nome}"/>
+                    <div class="card-corpo">
+                        <h3 th:text="${g.nome}">nome</h3>
+                        <p class="meta" th:text="${g.azienda.nome}">azienda</p>
+                        <p class="prezzo" th:text="${#numbers.formatDecimal(g.prezzo, 1, 2)} + ' EUR'">prezzo</p>
+                    </div>
+                </a>
+            </article>
+        </div>
+        <p th:if="${#lists.isEmpty(gacha)}">Nessuna serie gacha per questa serie.</p>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Fumetti')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+
+<main class="container">
+    <div th:replace="~{fragments/base :: messaggi}"></div>
+    <h1>Fumetti</h1>
+
+    <form th:action="@{/fumetti}" method="get" class="form-ricerca">
+        <input type="text" name="q" th:value="${q}" placeholder="Cerca per titolo..."/>
+        <button type="submit" class="bottone">Cerca</button>
+    </form>
+
+    <p th:if="${credenziali != null and credenziali.admin}">
+        <a class="bottone secondario" th:href="@{/admin/fumetti/nuovo}">Nuovo fumetto</a>
+    </p>
+
+    <table class="tabella">
+        <thead>
+        <tr><th></th><th>Titolo</th><th>Serie</th><th>Anno</th><th>Scrittore</th><th>Editore</th><th>Genere</th><th>Prezzo</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="f : ${fumetti}">
+            <td class="cella-copertina">
+                <a th:href="@{/fumetti/{id}(id=${f.id})}">
+                    <img class="copertina-mini" th:if="${f.immagine}"
+                         th:src="${f.immagine}" th:alt="${f.titolo}"/>
+                </a>
+            </td>
+            <td><a th:href="@{/fumetti/{id}(id=${f.id})}" th:text="${f.titolo}">titolo</a></td>
+            <td th:text="${f.serie.nome}">serie</td>
+            <td th:text="${f.anno}">anno</td>
+            <td th:text="${f.scrittore.nomeCompleto}">scrittore</td>
+            <td th:text="${f.editore.nome}">editore</td>
+            <td th:text="${f.genere}">genere</td>
+            <td th:text="${#numbers.formatDecimal(f.prezzo, 1, 2)} + ' EUR'">prezzo</td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${#lists.isEmpty(fumetti)}">Nessun fumetto trovato.</p>
+</main>
+
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

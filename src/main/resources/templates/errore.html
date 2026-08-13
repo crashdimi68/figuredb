@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Errore')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+<main class="container stretto">
+    <h1 th:text="'Errore ' + ${codice != null ? codice : ''}">Errore</h1>
+    <p th:text="${messaggio}">Si e' verificato un errore.</p>
+    <a class="bottone" th:href="@{/}">Torna alla home</a>
+</main>
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

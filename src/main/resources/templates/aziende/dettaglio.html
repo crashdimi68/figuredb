@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles(${azienda.nome})}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+<main class="container">
+    <h1 th:text="${azienda.nome}">azienda</h1>
+    <p class="meta" th:text="${azienda.regione}">regione</p>
+    <p th:text="${azienda.descrizione}">descrizione</p>
+
+    <h2>Figure prodotte</h2>
+    <div class="griglia">
+        <article class="card" th:each="f : ${figure}">
+            <a th:href="@{/figure/{id}(id=${f.id})}">
+                <div class="card-corpo">
+                    <h3 th:text="${f.nome}">nome</h3>
+                    <p class="prezzo" th:text="${#numbers.formatDecimal(f.prezzo, 1, 2)} + ' EUR'">prezzo</p>
+                </div>
+            </a>
+        </article>
+    </div>
+    <p th:if="${#lists.isEmpty(figure)}">Nessuna figure registrata.</p>
+
+    <h2>Serie gacha</h2>
+    <ul class="lista">
+        <li th:each="g : ${gacha}">
+            <a th:href="@{/gacha/{id}(id=${g.id})}" th:text="${g.nome}">gacha</a>
+        </li>
+    </ul>
+    <p th:if="${#lists.isEmpty(gacha)}">Nessuna serie gacha registrata.</p>
+</main>
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

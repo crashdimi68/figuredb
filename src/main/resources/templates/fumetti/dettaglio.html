@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles(${fumetto.titolo})}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+
+<main class="container">
+    <h1 th:text="${fumetto.titolo}">titolo</h1>
+    <span class="badge" th:if="${fumetto.variant}">Variant</span>
+
+    <div class="dettaglio">
+        <div class="dettaglio-immagine">
+            <img th:if="${fumetto.immagine}" th:src="${fumetto.immagine}"
+                 th:alt="${fumetto.titolo}"/>
+        </div>
+        <div class="dettaglio-testo">
+            <dl>
+                <dt>Serie</dt>
+                <dd><a th:href="@{/serie/{id}(id=${fumetto.serie.id})}" th:text="${fumetto.serie.nome}">serie</a></dd>
+                <dt>Anno</dt><dd th:text="${fumetto.anno}">anno</dd>
+                <dt>ISBN</dt><dd th:text="${fumetto.isbn}">isbn</dd>
+                <dt>Genere</dt><dd th:text="${fumetto.genere}">genere</dd>
+                <dt>Prezzo</dt><dd th:text="${#numbers.formatDecimal(fumetto.prezzo, 1, 2)} + ' EUR'">prezzo</dd>
+                <dt>Scrittore</dt>
+                <dd><a th:href="@{/fumetti/scrittori/{id}(id=${fumetto.scrittore.id})}"
+               th:text="${fumetto.scrittore.nomeCompleto}">scrittore</a></dd>
+                <dt>Disegnatori</dt>
+                <dd>
+            <span th:each="d, i : ${fumetto.disegnatori}">
+                <a th:href="@{/fumetti/disegnatori/{id}(id=${d.id})}" th:text="${d.nomeCompleto}">disegnatore</a>
+                <span th:if="${!i.last}">, </span>
+            </span>
+                </dd>
+                <dt>Editore</dt>
+                <dd th:text="${fumetto.editore.nome}">editore</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div th:if="${credenziali != null and credenziali.admin}" class="azioni">
+        <form th:action="@{/admin/fumetti/{id}/elimina(id=${fumetto.id})}" method="post" class="inline-form">
+            <button type="submit" class="bottone pericolo">Elimina</button>
+        </form>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

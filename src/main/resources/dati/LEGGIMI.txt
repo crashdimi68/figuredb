@@ -1,0 +1,124 @@
+DATI DEL CATALOGO
+=================
+
+I file CSV di questa cartella definiscono il contenuto del database.
+Vengono letti dal DatabaseSeeder a ogni avvio, quando il database e' vuoto.
+
+Stanno su Git: chi clona il progetto ottiene esattamente lo stesso catalogo.
+
+
+COME MODIFICARLI
+----------------
+Aprili con Google Sheets (File > Importa) oppure con Excel.
+Per riesportare: File > Scarica > Valori separati da virgola (.csv).
+Mantieni la prima riga di intestazione: il seeder la usa per capire le colonne.
+
+
+serie.csv
+---------
+nome          Testo. Deve essere unico.
+tipo          Uno tra: MANGA  ANIME  FUMETTO  GRAPHIC_NOVEL  VIDEOGIOCO  FILM
+              SERIE_TV  SPORT
+descrizione   Testo libero. Se contiene virgole, va tra virgolette doppie.
+logo          Percorso di un'immagine, oppure lascia vuoto.
+personaggi    Uno o piu' nomi separati dal carattere |   (almeno uno)
+
+
+aziende.csv
+-----------
+nome          Testo. Deve essere unico.
+regione       Testo (es. Giappone, Italia, Stati Uniti).
+descrizione   Testo libero.
+logo          Percorso di un'immagine, oppure lascia vuoto.
+
+
+figure.csv
+----------
+nome              Testo.
+serie             Deve corrispondere ESATTAMENTE a un nome presente in serie.csv
+azienda           Deve corrispondere ESATTAMENTE a un nome presente in aziende.csv
+dataUscita        Formato anno-mese-giorno, es. 2024-03-15
+altezza           Centimetri, con il punto come separatore decimale, es. 17.5
+materiale         Uno tra: PVC  ABS  PVC_ABS  RESINA  POLYSTONE  METALLO  VINILE  PORCELLANA
+prezzo            Euro, con il punto come separatore decimale, es. 54.90
+edizioneLimitata  si / no   (accettati anche true / false / 1 / 0)
+cartellaImmagini  Nome della cartella dentro static/images/figure/ che contiene la foto.
+                  Lascia vuoto se la figure non ha immagine.
+descrizione       Testo libero.
+
+ATTENZIONE: non possono esistere due figure con lo stesso nome, della stessa
+azienda e con la stessa data di uscita. E' un vincolo del database.
+
+
+autori.csv
+----------
+nome          Nome di battesimo.
+cognome       Cognome.
+dataNascita   Formato anno-mese-giorno, es. 1975-01-01
+paese         Testo (es. Giappone).
+ruolo         SCRITTORE, DISEGNATORE oppure ENTRAMBI.
+              Con ENTRAMBI la persona viene creata sia come scrittore sia come
+              disegnatore: serve per autori come Oda, che scrive e disegna.
+
+
+editori.csv
+-----------
+nome          Testo. Deve essere unico.
+regione       Testo.
+descrizione   Testo libero.
+logo          Percorso di un'immagine, oppure lascia vuoto.
+
+
+fumetti.csv
+-----------
+titolo        Testo.
+serie         Deve corrispondere a un nome presente in serie.csv
+scrittore     "Nome Cognome", deve corrispondere a una riga di autori.csv
+disegnatori   Uno o piu' "Nome Cognome" separati da |   (almeno uno)
+editore       Deve corrispondere a un nome presente in editori.csv
+anno          Numero intero, es. 1997
+isbn          10 o 13 cifre. Deve essere unico.
+prezzo        Euro, con il punto come separatore decimale.
+genere        Testo libero (Shonen, Seinen, Supereroi, ...).
+variant       si / no
+cartellaImmagini  Nome della cartella dentro static/images/fumetti/ che contiene
+                  la copertina. Lascia vuoto se il fumetto non ha immagine.
+
+
+gacha.csv
+---------
+nome              Testo.
+serie             Deve corrispondere a un nome presente in serie.csv
+azienda           Deve corrispondere a un nome presente in aziende.csv
+dataUscita        Formato anno-mese-giorno.
+prezzo            Euro, con il punto come separatore decimale.
+cartellaImmagini  Nome della cartella dentro static/images/gacha/
+descrizione       Testo libero.
+
+
+LE IMMAGINI
+-----------
+Ogni figure ha la sua cartella in:
+
+    src/main/resources/static/images/figure/<cartellaImmagini>/
+
+Il seeder prende il PRIMO file in ordine alfabetico. Chiama i file 01.jpg,
+02.jpg, 03.jpg: la 01 e' quella che verra' mostrata sul sito, le altre restano
+disponibili per il futuro.
+
+Esempio:
+    static/images/figure/rufy-nendoroid/01.jpg     <- questa viene mostrata
+    static/images/figure/rufy-nendoroid/02.jpg
+    static/images/figure/sephiroth-statua/01.jpg
+
+Per fumetti e gacha vale la stessa regola, cambia solo la cartella base:
+    static/images/fumetti/<cartellaImmagini>/01.jpg
+    static/images/gacha/<cartellaImmagini>/01.jpg
+
+Per i loghi di serie, aziende ed editori non serve una cartella: nelle colonne
+"logo" dei rispettivi CSV scrivi direttamente il percorso, per esempio
+    /images/serie/one-piece.png
+e metti il file in src/main/resources/static/images/serie/one-piece.png
+
+Ridimensiona le immagini a circa 600-800 pixel di lato prima di aggiungerle:
+Git conserva ogni versione per sempre, quindi conviene partire gia' leggeri.

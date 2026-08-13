@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Serie')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+
+<main class="container">
+    <h1>Serie</h1>
+
+    <form th:action="@{/serie}" method="get" class="form-ricerca">
+        <input type="text" name="q" th:value="${q}" placeholder="Cerca una serie..."/>
+        <button type="submit" class="bottone">Cerca</button>
+    </form>
+
+    <p th:if="${credenziali != null and credenziali.admin}">
+        <a class="bottone secondario" th:href="@{/admin/serie/nuova}">Nuova serie</a>
+    </p>
+
+    <div class="griglia">
+        <article class="card" th:each="s : ${serie}">
+            <a th:href="@{/serie/{id}(id=${s.id})}">
+                <img th:if="${s.logo}" th:src="${s.logo}" th:alt="${s.nome}"/>
+                <div class="card-corpo">
+                    <h3 th:text="${s.nome}">nome</h3>
+                    <p class="meta" th:text="${s.tipo}">tipo</p>
+                </div>
+            </a>
+        </article>
+    </div>
+    <p th:if="${#lists.isEmpty(serie)}">Nessuna serie trovata.</p>
+</main>
+
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Aziende')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+<main class="container">
+    <h1>Aziende produttrici</h1>
+    <p th:if="${credenziali != null and credenziali.admin}">
+        <a class="bottone secondario" th:href="@{/admin/aziende/nuova}">Nuova azienda</a>
+    </p>
+    <div class="griglia">
+        <article class="card" th:each="a : ${aziende}">
+            <a th:href="@{/aziende/{id}(id=${a.id})}">
+                <img th:if="${a.logo}" th:src="${a.logo}" th:alt="${a.nome}"/>
+                <div class="card-corpo">
+                    <h3 th:text="${a.nome}">nome</h3>
+                    <p class="meta" th:text="${a.regione}">regione</p>
+                </div>
+            </a>
+        </article>
+    </div>
+</main>
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

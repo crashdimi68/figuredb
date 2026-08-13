@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Catalogo')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+
+<main class="container">
+    <h1>Catalogo figure</h1>
+    <p class="sottotitolo">
+        Questa sezione e' realizzata in React e consuma le API REST
+        <code>/api/figure</code>, <code>/api/serie</code> e <code>/api/aziende</code>.
+    </p>
+
+    <!-- punto di innesto dell'applicazione React -->
+    <div id="root-catalogo"></div>
+</main>
+
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" th:src="@{/js/catalogo.jsx}"></script>
+</body>
+</html>

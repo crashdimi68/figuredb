@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Gestione figure')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+<main class="container">
+    <div th:replace="~{fragments/base :: messaggi}"></div>
+    <h1>Gestione catalogo</h1>
+    <a class="bottone" th:href="@{/admin/figure/nuova}">Nuova figure</a>
+
+    <table class="tabella">
+        <thead>
+        <tr><th>Nome</th><th>Azienda</th><th>Serie</th><th>Uscita</th><th>Prezzo</th><th>Azioni</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="f : ${figure}">
+            <td><a th:href="@{/figure/{id}(id=${f.id})}" th:text="${f.nome}">nome</a></td>
+            <td th:text="${f.azienda.nome}">azienda</td>
+            <td th:text="${f.serie.nome}">serie</td>
+            <td th:text="${#temporals.format(f.dataUscita, 'dd/MM/yyyy')}">data</td>
+            <td th:text="${#numbers.formatDecimal(f.prezzo, 1, 2)}">prezzo</td>
+            <td>
+                <a th:href="@{/admin/figure/{id}/modifica(id=${f.id})}">Modifica</a>
+                <form th:action="@{/admin/figure/{id}/elimina(id=${f.id})}" method="post" class="inline-form">
+                    <button type="submit" class="link-button pericolo">Elimina</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>
