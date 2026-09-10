@@ -5,6 +5,7 @@
 <header th:replace="~{fragments/base :: intestazione}"></header>
 
 <main class="container">
+    <div th:replace="~{fragments/base :: messaggi}"></div>
     <h1>Serie</h1>
 
     <form th:action="@{/serie}" method="get" class="form-ricerca">

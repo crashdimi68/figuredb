@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/base :: headerfiles('Nuovo fumetto')}"></head>
+<head th:replace="~{fragments/base :: headerfiles(${titoloForm})}"></head>
 <body>
 <header th:replace="~{fragments/base :: intestazione}"></header>
 <main class="container stretto">
-    <h1>Nuovo fumetto</h1>
+    <h1 th:text="${titoloForm}">Fumetto</h1>
     <p class="alert errore" th:if="${errore}" th:text="${errore}"></p>
 
-    <form th:object="${fumetto}" th:action="@{/admin/fumetti/nuovo}" method="post" class="form">
+    <form th:object="${fumetto}" th:action="@{${azione}}" method="post" class="form">
+        <input type="hidden" th:field="*{id}"/>
+
         <label for="titolo">Titolo</label>
         <input type="text" id="titolo" th:field="*{titolo}"/>
         <span class="errore-campo" th:if="${#fields.hasErrors('titolo')}" th:errors="*{titolo}"></span>
@@ -30,22 +32,26 @@
 
         <label for="serieId">Serie</label>
         <select id="serieId" name="serieId">
-            <option th:each="s : ${serie}" th:value="${s.id}" th:text="${s.nome}"></option>
+            <option th:each="s : ${serie}" th:value="${s.id}" th:text="${s.nome}"
+                    th:selected="${fumetto.serie != null and fumetto.serie.id == s.id}"></option>
         </select>
 
         <label for="scrittoreId">Scrittore</label>
         <select id="scrittoreId" name="scrittoreId">
-            <option th:each="s : ${scrittori}" th:value="${s.id}" th:text="${s.nomeCompleto}"></option>
+            <option th:each="s : ${scrittori}" th:value="${s.id}" th:text="${s.nomeCompleto}"
+                    th:selected="${fumetto.scrittore != null and fumetto.scrittore.id == s.id}"></option>
         </select>
 
         <label for="disegnatoriIds">Disegnatori (selezione multipla)</label>
         <select id="disegnatoriIds" name="disegnatoriIds" multiple size="5">
-            <option th:each="d : ${disegnatori}" th:value="${d.id}" th:text="${d.nomeCompleto}"></option>
+            <option th:each="d : ${disegnatori}" th:value="${d.id}" th:text="${d.nomeCompleto}"
+                    th:selected="${disegnatoriSelezionati != null and #lists.contains(disegnatoriSelezionati, d.id)}"></option>
         </select>
 
         <label for="editoreId">Editore</label>
         <select id="editoreId" name="editoreId">
-            <option th:each="e : ${editori}" th:value="${e.id}" th:text="${e.nome}"></option>
+            <option th:each="e : ${editori}" th:value="${e.id}" th:text="${e.nome}"
+                    th:selected="${fumetto.editore != null and fumetto.editore.id == e.id}"></option>
         </select>
 
         <label for="immagine">Copertina</label>

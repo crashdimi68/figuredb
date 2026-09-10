@@ -39,6 +39,29 @@ public class AziendaService {
         return this.aziendaRepository.save(azienda);
     }
 
+    /**
+     * CASO D'USO (ADMIN): modifica di un'azienda esistente.
+     * I campi arrivano dalla form e vengono copiati sull'entita' gestita,
+     * cosi' le associazioni con figure e gacha restano intatte.
+     */
+    @Transactional
+    public Azienda aggiorna(Long id, Azienda dati) {
+        Azienda esistente = this.findById(id);
+
+        this.aziendaRepository.findByNomeIgnoreCase(dati.getNome()).ifPresent(altra -> {
+            if (!altra.getId().equals(id)) {
+                throw new VincoloViolatoException(
+                        "Esiste gia' un'altra azienda chiamata '" + dati.getNome() + "'");
+            }
+        });
+
+        esistente.setNome(dati.getNome());
+        esistente.setRegione(dati.getRegione());
+        esistente.setDescrizione(dati.getDescrizione());
+        esistente.setLogo(dati.getLogo());
+        return this.aziendaRepository.save(esistente);
+    }
+
     @Transactional
     public void elimina(Long id) {
         Azienda azienda = this.findById(id);

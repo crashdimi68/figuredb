@@ -208,6 +208,57 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accento); b
 .lista-recensioni { list-style: none; padding: 0; }
 .lista-recensioni li { border-top: 1px solid var(--bordo); padding: .8rem 0; }
 
+/* ---------- Paginazione (elenco figure) ---------- */
+.paginazione {
+    display: flex; flex-wrap: wrap; gap: .4rem; justify-content: center;
+    align-items: center; margin: 2rem 0 1rem;
+}
+/* Gli stessi stili valgono per i link della pagina Thymeleaf (/figure)
+   e per i bottoni del catalogo React (/catalogo). */
+.paginazione a, .paginazione .disabilitato, .paginazione .link-pagina {
+    padding: .4rem .8rem; border: 1px solid var(--bordo);
+    border-radius: 6px; background: var(--superficie); color: var(--testo-tenue);
+    min-width: 2.4rem; width: auto; text-align: center;
+    font: inherit; cursor: pointer;
+}
+.paginazione a:hover,
+.paginazione .link-pagina:not(:disabled):hover {
+    border-color: var(--accento); color: var(--accento-chiaro); text-decoration: none;
+}
+.paginazione a.corrente, .paginazione .link-pagina.corrente {
+    background: var(--accento); border-color: var(--accento);
+    color: #fff; font-weight: 600;
+}
+.paginazione .disabilitato,
+.paginazione .link-pagina:disabled { opacity: .35; cursor: default; }
+
+/* ---------- Analisi delle prestazioni (admin) ---------- */
+.analisi h1 { text-align: center; }
+.analisi-sottotitolo { text-align: center; color: var(--testo-tenue); max-width: 46rem; margin: 0 auto 1.5rem; }
+.analisi-badge {
+    display: block; width: fit-content; margin: 0 auto 2rem;
+    padding: .4rem 1.1rem; border: 1px solid var(--bordo);
+    border-radius: 999px; background: var(--superficie); color: var(--testo-tenue);
+}
+.grafico { margin: 2rem 0; display: flex; flex-direction: column; gap: .9rem; }
+.grafico-riga { display: grid; grid-template-columns: 190px 1fr 90px; gap: 1rem; align-items: center; }
+.grafico-etichetta { font-weight: 600; }
+.grafico-barra {
+    background: var(--superficie-chiara); border-radius: 6px;
+    height: 30px; overflow: hidden;
+}
+/* La barra piu' lunga (la strategia piu' lenta) e' colorata di rosso:
+   e' quella che vogliamo far notare, non quella da imitare. */
+.grafico-riempimento { height: 100%; background: var(--accento); border-radius: 6px; }
+.grafico-riempimento.lenta { background: var(--errore); }
+.grafico-valore { text-align: right; font-weight: 600; }
+.cella-descrizione { max-width: 34rem; color: var(--testo-tenue); font-size: .9rem; }
+
+@media (max-width: 860px) {
+    .grafico-riga { grid-template-columns: 1fr; gap: .3rem; }
+    .grafico-valore { text-align: left; }
+}
+
 footer {
     text-align: center; color: var(--testo-tenue);
     padding: 2rem; border-top: 1px solid var(--bordo); margin-top: 3rem; font-size: .88rem;

@@ -12,7 +12,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import it.uniroma3.siw.figuredb.model.Credentials;
 import it.uniroma3.siw.figuredb.model.Recensione;
-import it.uniroma3.siw.figuredb.service.CollezioneService;
 import it.uniroma3.siw.figuredb.service.FigureService;
 import it.uniroma3.siw.figuredb.service.RecensioneService;
 import it.uniroma3.siw.figuredb.service.exception.VincoloViolatoException;
@@ -27,14 +26,11 @@ public class RecensioneController {
 
     private final RecensioneService recensioneService;
     private final FigureService figureService;
-    private final CollezioneService collezioneService;
 
     public RecensioneController(RecensioneService recensioneService,
-                                FigureService figureService,
-                                CollezioneService collezioneService) {
+                                FigureService figureService) {
         this.recensioneService = recensioneService;
         this.figureService = figureService;
-        this.collezioneService = collezioneService;
     }
 
     /** Inserimento di una recensione su una figure. */
@@ -49,10 +45,7 @@ public class RecensioneController {
         if (errori.hasErrors()) {
             model.addAttribute("figure", this.figureService.findById(figureId));
             model.addAttribute("recensioni", this.recensioneService.findByFigure(figureId));
-            model.addAttribute("mediaVoti", this.recensioneService.mediaVoti(figureId));
             model.addAttribute("haGiaRecensito", false);
-            model.addAttribute("inCollezione",
-                    this.collezioneService.isInCollezione(userDetails.getUsername(), figureId));
             return "figure/dettaglio";
         }
         try {
@@ -64,10 +57,17 @@ public class RecensioneController {
         return "redirect:/figure/" + figureId;
     }
 
-    /** Form di modifica di una propria recensione. */
+    /**
+     * Form di modifica di una propria recensione.
+     * Se la recensione non e' dell'utente autenticato il service solleva
+     * OperazioneNonAutorizzataException: vale anche per l'amministratore.
+     */
     @GetMapping("/recensioni/{id}/modifica")
-    public String mostraModifica(@PathVariable Long id, Model model) {
-        model.addAttribute("recensione", this.recensioneService.findById(id));
+    public String mostraModifica(@PathVariable Long id,
+                                 @ModelAttribute("userDetails") UserDetails userDetails,
+                                 Model model) {
+        model.addAttribute("recensione",
+                this.recensioneService.findPerModifica(id, userDetails.getUsername()));
         return "recensioni/modifica";
     }
 

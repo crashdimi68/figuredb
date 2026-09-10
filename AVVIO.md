@@ -114,7 +114,7 @@ Cose da provare:
 **Accedi** da `/login`:
 
 - `admin` / `admin123` → vedi il menu **Amministrazione**
-- `damiano` / `user123` → puoi recensire e usare la collezione
+- `damiano` / `user123` → puoi scrivere e modificare le tue recensioni
 
 ---
 

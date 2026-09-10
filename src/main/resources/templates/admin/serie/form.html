@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/base :: headerfiles('Nuova serie')}"></head>
+<head th:replace="~{fragments/base :: headerfiles(${titoloForm})}"></head>
 <body>
 <header th:replace="~{fragments/base :: intestazione}"></header>
 <main class="container stretto">
-    <h1>Nuova serie</h1>
+    <h1 th:text="${titoloForm}">Serie</h1>
     <p class="alert errore" th:if="${errore}" th:text="${errore}"></p>
 
-    <form th:object="${serieForm}" th:action="@{/admin/serie/nuova}" method="post" class="form">
+    <!-- Stessa form per l'inserimento e per la modifica: cambia solo l'URL
+         a cui viene inviata, deciso dal controller (attributo "azione"). -->
+    <form th:object="${serieForm}" th:action="@{${azione}}" method="post" class="form">
+        <input type="hidden" th:field="*{id}"/>
+
         <label for="nome">Nome</label>
         <input type="text" id="nome" th:field="*{nome}"/>
         <span class="errore-campo" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>

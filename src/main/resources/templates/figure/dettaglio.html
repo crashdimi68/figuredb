@@ -29,8 +29,6 @@
                 <dd th:text="${figure.materiale}">materiale</dd>
                 <dt>Prezzo</dt>
                 <dd th:text="${#numbers.formatDecimal(figure.prezzo, 1, 2)} + ' EUR'">prezzo</dd>
-                <dt>Voto medio</dt>
-                <dd th:text="${mediaVoti != null ? #numbers.formatDecimal(mediaVoti, 1, 1) + ' / 5' : 'nessuna recensione'}">-</dd>
             </dl>
 
             <p th:text="${figure.descrizione}">descrizione</p>
@@ -43,22 +41,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Aggiunta alla collezione: solo utenti autenticati -->
-    <section th:if="${userDetails != null and inCollezione == false}">
-        <h2>Aggiungi alla tua collezione</h2>
-        <form th:action="@{/collezione/aggiungi/{id}(id=${figure.id})}" method="post" class="form-inline">
-            <select name="stato">
-                <option value="POSSEDUTA">Posseduta</option>
-                <option value="WISHLIST">Wishlist</option>
-                <option value="PREORDINE">Preordine</option>
-            </select>
-            <input type="number" name="quantita" value="1" min="1"/>
-            <input type="text" name="note" placeholder="Note (opzionale)"/>
-            <button type="submit" class="bottone">Aggiungi</button>
-        </form>
-    </section>
-    <p th:if="${inCollezione == true}" class="alert successo">Questa figure e' gia' nella tua collezione.</p>
 
     <section>
         <h2>Recensioni</h2>

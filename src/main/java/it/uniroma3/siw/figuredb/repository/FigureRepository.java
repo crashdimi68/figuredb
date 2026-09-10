@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +21,20 @@ public interface FigureRepository extends CrudRepository<Figure, Long>, FigureRe
          + "join fetch f.serie "
          + "order by f.nome")
     List<Figure> findAllConAziendaESerie();
+
+    /**
+     * Elenco paginato, usato da /figure.
+     *
+     * Con Pageable il database restituisce solo la pagina richiesta (LIMIT e
+     * OFFSET) invece di tutte le figure. La countQuery separata serve a Spring
+     * Data per sapere quante pagine ci sono in totale: senza di essa non
+     * saprebbe contare le righe di una query con join fetch.
+     */
+    @Query(value = "select f from Figure f "
+                 + "join fetch f.azienda "
+                 + "join fetch f.serie",
+           countQuery = "select count(f) from Figure f")
+    Page<Figure> findPaginaConAziendaESerie(Pageable pageable);
 
     /** Dettaglio: carica in una sola query figure + azienda + serie. */
     @Query("select f from Figure f "

@@ -2,7 +2,9 @@ package it.uniroma3.siw.figuredb.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +53,22 @@ public class FigureService {
     @Transactional(readOnly = true)
     public List<Figure> findAll() {
         return this.figureRepository.findAllConAziendaESerie();
+    }
+
+    /**
+     * CASO D'USO PUBBLICO: elenco del catalogo UNA PAGINA ALLA VOLTA.
+     *
+     * Serve alla schermata /figure: con un catalogo grande caricare tutto in
+     * una sola pagina web e' inutile e lento. Il numero di pagina arriva dal
+     * controller; l'ordinamento per nome rende stabile la suddivisione
+     * (senza order by il database non garantisce lo stesso ordine fra una
+     * pagina e l'altra, e qualche figure potrebbe comparire due volte).
+     */
+    @Transactional(readOnly = true)
+    public Page<Figure> findPagina(int numeroPagina, int figurePerPagina) {
+        int pagina = Math.max(numeroPagina, 0);
+        return this.figureRepository.findPaginaConAziendaESerie(
+                PageRequest.of(pagina, figurePerPagina, Sort.by("nome")));
     }
 
     /**

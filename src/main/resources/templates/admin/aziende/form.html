@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/base :: headerfiles('Nuova azienda')}"></head>
+<head th:replace="~{fragments/base :: headerfiles(${titoloForm})}"></head>
 <body>
 <header th:replace="~{fragments/base :: intestazione}"></header>
 <main class="container stretto">
-    <h1>Nuova azienda</h1>
+    <h1 th:text="${titoloForm}">Azienda</h1>
     <p class="alert errore" th:if="${errore}" th:text="${errore}"></p>
 
-    <form th:object="${azienda}" th:action="@{/admin/aziende/nuova}" method="post" class="form">
+    <form th:object="${azienda}" th:action="@{${azione}}" method="post" class="form">
+        <input type="hidden" th:field="*{id}"/>
+
         <label for="nome">Nome</label>
         <input type="text" id="nome" th:field="*{nome}"/>
         <span class="errore-campo" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>

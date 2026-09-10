@@ -53,11 +53,6 @@ public class RecensioneService {
     }
 
     @Transactional(readOnly = true)
-    public Double mediaVoti(Long figureId) {
-        return this.recensioneRepository.mediaVotiPerFigure(figureId);
-    }
-
-    @Transactional(readOnly = true)
     public boolean haGiaRecensito(String username, Long figureId) {
         User autore = this.recuperaUtente(username);
         return this.recensioneRepository.existsByAutoreIdAndFigureId(autore.getId(), figureId);
@@ -101,8 +96,26 @@ public class RecensioneService {
     }
 
     /**
+     * Recensione da mostrare nella form di modifica.
+     *
+     * Il controllo di proprieta' si fa gia' qui, all'apertura della form, e non
+     * solo al salvataggio: altrimenti chiunque conosca l'id (un amministratore
+     * compreso) vedrebbe una form che poi rifiuta il salvataggio.
+     */
+    @Transactional(readOnly = true)
+    public Recensione findPerModifica(Long id, String username) {
+        Recensione recensione = this.findById(id);
+        this.verificaProprietario(recensione, username);
+        return recensione;
+    }
+
+    /**
      * CASO D'USO (USER) — MODIFICA DI UNA PROPRIA RECENSIONE.
-     * Verifica che l'utente autenticato sia l'autore della recensione.
+     *
+     * Solo l'autore puo' modificare il testo di una recensione: nemmeno
+     * l'amministratore puo' farlo, perche' cambiare le parole di qualcun altro
+     * lasciandogli la firma sarebbe una falsificazione. La moderazione
+     * dell'ADMIN si esercita cancellando (vedi elimina), non riscrivendo.
      */
     @Transactional
     public Recensione aggiorna(Long recensioneId, Recensione datiAggiornati, String username) {
@@ -118,7 +131,8 @@ public class RecensioneService {
 
     /**
      * CASO D'USO (USER) — CANCELLAZIONE DI UNA PROPRIA RECENSIONE.
-     * Un ADMIN puo' cancellare qualsiasi recensione (moderazione).
+     * Un ADMIN puo' cancellare qualsiasi recensione: e' l'unico potere che ha
+     * sulle recensioni altrui.
      */
     @Transactional
     public Long elimina(Long recensioneId, String username, boolean isAdmin) {

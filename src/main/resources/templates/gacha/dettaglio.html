@@ -5,6 +5,8 @@
 <header th:replace="~{fragments/base :: intestazione}"></header>
 
 <main class="container">
+    <div th:replace="~{fragments/base :: messaggi}"></div>
+
     <h1 th:text="${gacha.nome}">gacha</h1>
 
     <!-- Stessa struttura a due colonne usata dal dettaglio di figure e fumetti:
@@ -29,6 +31,13 @@
             </dl>
 
             <p th:text="${gacha.descrizione}">descrizione</p>
+
+            <div th:if="${credenziali != null and credenziali.admin}" class="azioni">
+                <a class="bottone secondario" th:href="@{/admin/gacha/{id}/modifica(id=${gacha.id})}">Modifica</a>
+                <form th:action="@{/admin/gacha/{id}/elimina(id=${gacha.id})}" method="post" class="inline-form">
+                    <button type="submit" class="bottone pericolo">Elimina</button>
+                </form>
+            </div>
         </div>
     </div>
 </main>

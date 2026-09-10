@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: headerfiles('Analisi delle prestazioni')}"></head>
+<body>
+<header th:replace="~{fragments/base :: intestazione}"></header>
+
+<main class="container">
+    <div class="analisi">
+        <h1>Strategie di accesso ai dati a confronto</h1>
+
+        <p class="analisi-sottotitolo">
+            Stesso caso d'uso, tre strategie: caricare tutte le figure di una serie
+            mostrando per ognuna azienda produttrice e serie di appartenenza.
+        </p>
+
+        <p th:if="${analisi.vuoto}" class="alert errore">
+            Non ci sono ancora figure a catalogo: senza dati il confronto non ha senso.
+        </p>
+
+        <div th:unless="${analisi.vuoto}">
+            <p class="analisi-badge">
+                <span th:text="${analisi.serie}">serie</span> &mdash;
+                <span th:text="${analisi.quanteFigure}">0</span> figure caricate a ogni esecuzione
+            </p>
+
+            <!-- Grafico: la barra piu' lunga e' la strategia piu' lenta.
+                 E' fatto con normali div, senza librerie JavaScript. -->
+            <div class="grafico">
+                <div class="grafico-riga" th:each="r : ${analisi.risultati}">
+                    <div class="grafico-etichetta" th:text="${r.nome}">strategia</div>
+                    <div class="grafico-barra">
+                        <div class="grafico-riempimento"
+                             th:classappend="${r.percentuale >= 100} ? ' lenta' : ''"
+                             th:style="'width:' + ${r.percentuale} + '%'"></div>
+                    </div>
+                    <div class="grafico-valore"
+                         th:text="${#numbers.formatDecimal(r.millisecondi, 1, 1)} + ' ms'">0 ms</div>
+                </div>
+            </div>
+
+            <table class="tabella">
+                <thead>
+                <tr>
+                    <th>Strategia</th>
+                    <th>Come funziona</th>
+                    <th>Query SQL</th>
+                    <th>Figure caricate</th>
+                    <th>Tempo</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="r : ${analisi.risultati}">
+                    <td th:text="${r.nome}">strategia</td>
+                    <td class="cella-descrizione" th:text="${r.descrizione}">descrizione</td>
+                    <td th:text="${r.querySql}">0</td>
+                    <td th:text="${r.oggettiCaricati}">0</td>
+                    <td th:text="${#numbers.formatDecimal(r.millisecondi, 1, 1)} + ' ms'">0 ms</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h2>Come leggere questi numeri</h2>
+            <p>
+                Con le associazioni <strong>LAZY</strong> la lista arriva con una query,
+                ma azienda e serie di ogni figure vengono caricate solo quando la vista
+                le legge: una SELECT per ciascuna. E' il <em>problema delle N+1 query</em>,
+                e si vede nella colonna "Query SQL".
+            </p>
+            <p>
+                <strong>JOIN FETCH</strong> e <strong>@EntityGraph</strong> risolvono lo
+                stesso caso d'uso con una sola query: il primo scrivendo il fetch join
+                nella JPQL, il secondo dichiarandolo con un'annotazione. A parita' di
+                risultato, la differenza fra i due e' solo di stile.
+            </p>
+            <p class="aiuto-campo">
+                I tempi sono misurati dal vivo su questo database e cambiano di poco a
+                ogni esecuzione. Prima di misurare viene fatto un giro di riscaldamento e
+                il persistence context viene svuotato fra una strategia e l'altra, cosi'
+                la cache di primo livello non falsa il confronto. Cio' che conta e' il
+                numero di query, che invece e' sempre lo stesso.
+            </p>
+        </div>
+
+        <div class="azioni">
+            <a class="bottone" th:href="@{/admin/prestazioni}">Riesegui il confronto</a>
+            <a class="bottone secondario" th:href="@{/admin}">Torna all'amministrazione</a>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/base :: fondo}"></footer>
+</body>
+</html>

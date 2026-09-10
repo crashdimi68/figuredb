@@ -4,20 +4,25 @@
 <body>
 <header th:replace="~{fragments/base :: intestazione}"></header>
 <main class="container">
+    <div th:replace="~{fragments/base :: messaggi}"></div>
     <h1>Amministrazione</h1>
-    <div class="griglia-statistiche">
-        <div class="statistica"><span th:text="${numeroFigure}">0</span><p>Figure</p></div>
-        <div class="statistica"><span th:text="${numeroFumetti}">0</span><p>Fumetti</p></div>
-        <div class="statistica"><span th:text="${numeroSerie}">0</span><p>Serie</p></div>
-        <div class="statistica"><span th:text="${numeroAziende}">0</span><p>Aziende</p></div>
-    </div>
-    <h2>Operazioni</h2>
+    <p class="sottotitolo">Gestione del catalogo e strumenti di analisi.</p>
+
+    <h2>Catalogo</h2>
     <ul class="lista">
         <li><a th:href="@{/admin/figure}">Gestione catalogo figure</a></li>
         <li><a th:href="@{/admin/figure/nuova}">Inserisci una nuova figure</a></li>
         <li><a th:href="@{/admin/fumetti/nuovo}">Inserisci un nuovo fumetto</a></li>
         <li><a th:href="@{/admin/serie/nuova}">Crea una nuova serie</a></li>
         <li><a th:href="@{/admin/aziende/nuova}">Registra una nuova azienda</a></li>
+        <li><a th:href="@{/admin/gacha/nuovo}">Crea una nuova serie gacha</a></li>
+    </ul>
+    <p class="aiuto-campo">Le operazioni di modifica e di cancellazione si trovano
+        nella pagina di dettaglio di ogni elemento.</p>
+
+    <h2>Analisi</h2>
+    <ul class="lista">
+        <li><a th:href="@{/admin/prestazioni}">Analisi delle prestazioni di accesso ai dati</a></li>
     </ul>
 </main>
 <footer th:replace="~{fragments/base :: fondo}"></footer>

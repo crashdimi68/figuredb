@@ -6,9 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import it.uniroma3.siw.figuredb.model.Recensione;
-import it.uniroma3.siw.figuredb.service.CollezioneService;
 import it.uniroma3.siw.figuredb.service.FigureService;
 import it.uniroma3.siw.figuredb.service.RecensioneService;
 
@@ -18,21 +18,26 @@ import it.uniroma3.siw.figuredb.service.RecensioneService;
 @Controller
 public class FigureController {
 
+    /** Quante figure mostrare per pagina in /figure. */
+    private static final int FIGURE_PER_PAGINA = 12;
+
     private final FigureService figureService;
     private final RecensioneService recensioneService;
-    private final CollezioneService collezioneService;
 
     public FigureController(FigureService figureService,
-                            RecensioneService recensioneService,
-                            CollezioneService collezioneService) {
+                            RecensioneService recensioneService) {
         this.figureService = figureService;
         this.recensioneService = recensioneService;
-        this.collezioneService = collezioneService;
     }
 
+    /**
+     * Elenco del catalogo, paginato.
+     * Il numero di pagina arriva come parametro ?pagina=N (0 se assente).
+     */
     @GetMapping("/figure")
-    public String elenco(Model model) {
-        model.addAttribute("figure", this.figureService.findAll());
+    public String elenco(@RequestParam(defaultValue = "0") int pagina, Model model) {
+        model.addAttribute("pagina",
+                this.figureService.findPagina(pagina, FIGURE_PER_PAGINA));
         return "figure/elenco";
     }
 
@@ -41,13 +46,11 @@ public class FigureController {
                             @ModelAttribute("userDetails") UserDetails userDetails) {
         model.addAttribute("figure", this.figureService.findById(id));
         model.addAttribute("recensioni", this.recensioneService.findByFigure(id));
-        model.addAttribute("mediaVoti", this.recensioneService.mediaVoti(id));
         model.addAttribute("nuovaRecensione", new Recensione());
 
         if (userDetails != null) {
-            String username = userDetails.getUsername();
-            model.addAttribute("haGiaRecensito", this.recensioneService.haGiaRecensito(username, id));
-            model.addAttribute("inCollezione", this.collezioneService.isInCollezione(username, id));
+            model.addAttribute("haGiaRecensito",
+                    this.recensioneService.haGiaRecensito(userDetails.getUsername(), id));
         }
         return "figure/dettaglio";
     }

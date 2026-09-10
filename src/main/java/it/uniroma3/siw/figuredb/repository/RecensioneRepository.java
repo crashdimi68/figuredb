@@ -24,8 +24,5 @@ public interface RecensioneRepository extends CrudRepository<Recensione, Long> {
          + "where r.autore.id = :autoreId order by r.data desc")
     List<Recensione> findByAutoreIdConFigure(@Param("autoreId") Long autoreId);
 
-    @Query("select avg(r.voto) from Recensione r where r.figure.id = :figureId")
-    Double mediaVotiPerFigure(@Param("figureId") Long figureId);
-
     long countByFigureId(Long figureId);
 }

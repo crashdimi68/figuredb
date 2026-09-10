@@ -24,9 +24,6 @@
         </ul>
         <ul class="menu right">
             <li th:if="${userDetails != null}">
-                <a th:href="@{/collezione}">La mia collezione</a>
-            </li>
-            <li th:if="${userDetails != null}">
                 <a th:href="@{/le-mie-recensioni}">Le mie recensioni</a>
             </li>
             <li th:if="${credenziali != null and credenziali.admin}">

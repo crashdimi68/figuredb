@@ -8,8 +8,14 @@
     <h1>Tutte le figure</h1>
     <p class="sottotitolo">Per la ricerca con filtri usa il <a th:href="@{/catalogo}">catalogo React</a>.</p>
 
+    <p class="meta" th:if="${pagina.totalElements > 0}">
+        <span th:text="${pagina.totalElements}">0</span> figure a catalogo &mdash;
+        pagina <span th:text="${pagina.number + 1}">1</span>
+        di <span th:text="${pagina.totalPages}">1</span>
+    </p>
+
     <div class="griglia">
-        <article class="card" th:each="f : ${figure}">
+        <article class="card" th:each="f : ${pagina.content}">
             <a th:href="@{/figure/{id}(id=${f.id})}">
                 <img th:if="${f.immagine}" th:src="${f.immagine}" th:alt="${f.nome}"/>
                 <div class="card-corpo">
@@ -21,6 +27,22 @@
             </a>
         </article>
     </div>
+    <p th:if="${pagina.empty}">Nessuna figure a catalogo.</p>
+
+    <!-- Navigazione fra le pagine. Il numero di pagina viaggia nell'URL
+         (?pagina=N), cosi' ogni pagina e' un indirizzo condivisibile. -->
+    <nav class="paginazione" th:if="${pagina.totalPages > 1}">
+        <a th:if="${!pagina.first}" th:href="@{/figure(pagina=${pagina.number - 1})}">&laquo; Precedente</a>
+        <span th:unless="${!pagina.first}" class="disabilitato">&laquo; Precedente</span>
+
+        <a th:each="i : ${#numbers.sequence(0, pagina.totalPages - 1)}"
+           th:href="@{/figure(pagina=${i})}"
+           th:text="${i + 1}"
+           th:classappend="${i == pagina.number} ? ' corrente' : ''">1</a>
+
+        <a th:if="${!pagina.last}" th:href="@{/figure(pagina=${pagina.number + 1})}">Successiva &raquo;</a>
+        <span th:unless="${!pagina.last}" class="disabilitato">Successiva &raquo;</span>
+    </nav>
 </main>
 
 <footer th:replace="~{fragments/base :: fondo}"></footer>

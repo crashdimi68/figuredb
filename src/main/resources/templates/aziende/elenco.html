@@ -4,6 +4,7 @@
 <body>
 <header th:replace="~{fragments/base :: intestazione}"></header>
 <main class="container">
+    <div th:replace="~{fragments/base :: messaggi}"></div>
     <h1>Aziende produttrici</h1>
     <p th:if="${credenziali != null and credenziali.admin}">
         <a class="bottone secondario" th:href="@{/admin/aziende/nuova}">Nuova azienda</a>

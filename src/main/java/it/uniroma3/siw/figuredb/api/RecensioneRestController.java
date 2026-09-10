@@ -2,7 +2,6 @@ package it.uniroma3.siw.figuredb.api;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -50,15 +49,6 @@ public class RecensioneRestController {
         return ResponseEntity.ok(this.recensioneService.findByFigure(figureId).stream()
                 .map(RecensioneDto::da)
                 .toList());
-    }
-
-    @GetMapping("/figure/{figureId}/recensioni/statistiche")
-    public ResponseEntity<Map<String, Object>> statistiche(@PathVariable Long figureId) {
-        Double media = this.recensioneService.mediaVoti(figureId);
-        List<Recensione> recensioni = this.recensioneService.findByFigure(figureId);
-        return ResponseEntity.ok(Map.of(
-                "media", media != null ? media : 0.0,
-                "numero", recensioni.size()));
     }
 
     @PostMapping("/figure/{figureId}/recensioni")

@@ -42,9 +42,6 @@ public class User {
     @OneToMany(mappedBy = "autore", fetch = FetchType.LAZY)
     private List<Recensione> recensioni = new ArrayList<>();
 
-    @OneToMany(mappedBy = "utente", fetch = FetchType.LAZY)
-    private List<VoceCollezione> collezione = new ArrayList<>();
-
     public User() {
     }
 
@@ -86,14 +83,6 @@ public class User {
 
     public void setRecensioni(List<Recensione> recensioni) {
         this.recensioni = recensioni;
-    }
-
-    public List<VoceCollezione> getCollezione() {
-        return collezione;
-    }
-
-    public void setCollezione(List<VoceCollezione> collezione) {
-        this.collezione = collezione;
     }
 
     public String getNomeCompleto() {

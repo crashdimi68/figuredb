@@ -11,7 +11,6 @@ Progetto per il corso di *Sistemi Informativi su Web* (a.a. 2025/2026) — Unive
 | File | Contenuto |
 |---|---|
 | `docs/figuredb-specifica-progetto.pdf` | Specifica del progetto: entita', casi d'uso, requisiti |
-| `docs/figuredb-guida-studio.pdf` | Guida allo studio: ogni strato spiegato dalla teoria al codice |
 | `AVVIO.md` | Come compilare e avviare, passo per passo |
 
 ## Stack
@@ -53,12 +52,12 @@ Poi chiudi e riapri il terminale. Se non le imposti, l'applicazione prova con
 
 Console H2: <http://localhost:8080/h2-console>
 
-L'applicazione parte su <http://localhost:8080> e il `DatabaseSeeder` carica il catalogo
-dai file CSV di `src/main/resources/dati/`, risolvendo le immagini dalle cartelle di
-`src/main/resources/static/images/`.
+L'applicazione parte su <http://localhost:8080> e, la prima volta che trova il database
+vuoto, il `DatabaseSeeder` carica il catalogo dai file CSV di `src/main/resources/dati/`,
+risolvendo le immagini dalle cartelle di `src/main/resources/static/images/`.
 
-Lo schema viene ricreato a ogni avvio (`ddl-auto=create-drop`), quindi per ricaricare
-il catalogo dopo aver modificato un CSV basta riavviare l'applicazione.
+Lo schema usa `ddl-auto=update`: le tabelle non vengono cancellate al riavvio, quindi
+recensioni e schede create da amministratore restano al loro posto.
 
 ### Utenze di prova
 
@@ -90,22 +89,28 @@ static/images/gacha/<cartellaImmagini>/01.jpg
 Il seeder mostra il primo file in ordine alfabetico. Se la cartella manca, l'elemento
 resta senza immagine e il sito continua a funzionare.
 
-**Per applicare le modifiche ai CSV basta riavviare.** La configurazione usa
-`ddl-auto=create-drop`: a ogni avvio lo schema viene ricreato e il seeder ricarica i CSV.
-
-Il rovescio della medaglia: cio' che inserisci dall'interfaccia del sito (recensioni,
-voci di collezione, figure create da amministratore) sparisce al riavvio. Se ti serve
-che resti, mettilo nei CSV oppure passa temporaneamente a `ddl-auto=update`.
+**Il seeder interviene solo su un database vuoto.** Con `ddl-auto=update` i dati
+sopravvivono al riavvio, quindi dopo aver modificato un CSV il catalogo gia' caricato
+non cambia da solo: per ricaricarlo svuota il database (da pgAdmin, oppure mettendo per
+una volta `ddl-auto=create-drop` in `application.properties`) e riavvia.
 
 ## Analisi delle strategie di accesso ai dati
+
+Due modi per vedere lo stesso esperimento.
+
+**Dal sito**, come amministratore: *Amministrazione → Analisi delle prestazioni*
+(`/admin/prestazioni`). Il confronto viene eseguito dal vivo a ogni caricamento della
+pagina e mostrato con un grafico a barre e una tabella.
+
+**Da console:**
 
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=fetch-demo
 ```
 
-Esegue `FetchStrategyRunner`, che carica **le figure di una serie con azienda e
-serie associate** con tre strategie diverse sullo stesso insieme di dati,
-stampando query SQL eseguite, tempo e oggetti caricati:
+Entrambi caricano **le figure di una serie con azienda e serie associate** con tre
+strategie diverse sullo stesso insieme di dati, misurando query SQL eseguite, tempo e
+oggetti caricati:
 
 1. **LAZY** — associazioni caricate su richiesta → problema delle N+1 query
 2. **JOIN FETCH** — fetch join esplicito in JPQL → 1 query
@@ -115,7 +120,7 @@ stampando query SQL eseguite, tempo e oggetti caricati:
 
 ```
 it.uniroma3.siw.figuredb
-├── model/          13 entita' JPA + 3 enum
+├── model/          12 entita' JPA + 2 enum
 ├── repository/     repository Spring Data + fragment Criteria API per la ricerca
 ├── service/        casi d'uso, logica di business, @Transactional
 │   └── exception/  eccezioni di dominio
@@ -139,7 +144,7 @@ Editore 1 ───────────┤
                      │
                   Figure * ──── 1 Azienda ────< Gacha
                      │
-              Recensione, VoceCollezione ──── User ──── Credentials
+                       Recensione ──── User ──── Credentials
 ```
 
 ## API REST
@@ -153,6 +158,10 @@ Editore 1 ───────────┤
 | POST | `/api/figure/{id}/recensioni` | autenticato → 201 |
 | PUT | `/api/recensioni/{id}` | solo autore → 200 |
 | DELETE | `/api/recensioni/{id}` | autore o ADMIN → 204 |
+
+Una recensione la puo' **modificare solo chi l'ha scritta**, amministratore compreso:
+cambiare le parole di qualcun altro lasciandogli la firma sarebbe una falsificazione.
+La moderazione dell'ADMIN si esercita **cancellando**, non riscrivendo.
 
 Errori: 400 validazione, 403 non proprietario, 404 non trovato, 409 vincolo violato.
 
@@ -179,9 +188,20 @@ I test girano su H2 in memoria e verificano le regole di business principali:
 una sola recensione per utente per figure, modifica riservata all'autore,
 vincolo di unicita' del catalogo, filtri di ricerca.
 
+## Area di amministrazione
+
+Riservata al ruolo `ADMIN` (`/admin/**`). Da `/admin` si raggiungono l'inserimento di
+figure, fumetti, serie, aziende e serie gacha e la schermata di analisi delle
+prestazioni. Modifica e cancellazione di ogni elemento stanno nella sua pagina di
+dettaglio, visibili solo quando si e' autenticati come amministratore.
+
+La cancellazione e' protetta dai vincoli di integrita': una serie con fumetti, figure o
+gacha collegati, e un'azienda con figure o gacha collegati, non si possono eliminare.
+L'operazione fallisce con un messaggio, non con una pagina di errore.
+
 ## Cosa manca (prossimi passi)
 
-- paginazione dell'elenco figure e delle recensioni
+- paginazione delle recensioni
 - upload delle immagini dall'interfaccia (oggi i file si aggiungono a mano nel progetto)
 - migrazione del frontend React a una build Vite
 - documentazione OpenAPI/Swagger delle API REST

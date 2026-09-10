@@ -73,6 +73,32 @@ public class SerieService {
     }
 
     /**
+     * CASO D'USO (ADMIN): modifica di una serie esistente.
+     *
+     * Non si passa l'oggetto arrivato dalla form a save(): quell'oggetto ha
+     * la lista dei personaggi vuota (la form non li mostra) e con
+     * orphanRemoval li cancellerebbe tutti. Si copiano invece i campi
+     * modificabili sull'entita' gia' gestita dalla sessione.
+     */
+    @Transactional
+    public Serie aggiorna(Long id, Serie dati) {
+        Serie esistente = this.findById(id);
+
+        this.serieRepository.findByNomeIgnoreCase(dati.getNome()).ifPresent(altra -> {
+            if (!altra.getId().equals(id)) {
+                throw new VincoloViolatoException(
+                        "Esiste gia' un'altra serie chiamata '" + dati.getNome() + "'");
+            }
+        });
+
+        esistente.setNome(dati.getNome());
+        esistente.setTipo(dati.getTipo());
+        esistente.setDescrizione(dati.getDescrizione());
+        esistente.setLogo(dati.getLogo());
+        return this.serieRepository.save(esistente);
+    }
+
+    /**
      * CASO D'USO (ADMIN): aggiunta di un personaggio ad una serie esistente.
      * Coinvolge due repository nella stessa transazione.
      */

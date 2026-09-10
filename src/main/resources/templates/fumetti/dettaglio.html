@@ -5,6 +5,8 @@
 <header th:replace="~{fragments/base :: intestazione}"></header>
 
 <main class="container">
+    <div th:replace="~{fragments/base :: messaggi}"></div>
+
     <h1 th:text="${fumetto.titolo}">titolo</h1>
     <span class="badge" th:if="${fumetto.variant}">Variant</span>
 
@@ -38,6 +40,7 @@
     </div>
 
     <div th:if="${credenziali != null and credenziali.admin}" class="azioni">
+        <a class="bottone secondario" th:href="@{/admin/fumetti/{id}/modifica(id=${fumetto.id})}">Modifica</a>
         <form th:action="@{/admin/fumetti/{id}/elimina(id=${fumetto.id})}" method="post" class="inline-form">
             <button type="submit" class="bottone pericolo">Elimina</button>
         </form>

@@ -123,10 +123,6 @@ function PannelloDettaglio({ figure, onChiudi }) {
         return () => { annullato = true; };
     }, [figure.id]);
 
-    const media = recensioni.length
-        ? recensioni.reduce((somma, r) => somma + r.voto, 0) / recensioni.length
-        : 0;
-
     return (
         <div className="pannello-overlay" onClick={onChiudi}>
             <div className="pannello" onClick={(e) => e.stopPropagation()}>
@@ -142,7 +138,7 @@ function PannelloDettaglio({ figure, onChiudi }) {
                 </dl>
                 {figure.descrizione && <p>{figure.descrizione}</p>}
 
-                <h3>Recensioni {recensioni.length > 0 && <Stelle voto={media} />}</h3>
+                <h3>Recensioni</h3>
                 {caricamento && <p>Caricamento...</p>}
                 {!caricamento && recensioni.length === 0 && <p>Nessuna recensione.</p>}
                 <ul className="lista-recensioni">
@@ -163,6 +159,39 @@ function PannelloDettaglio({ figure, onChiudi }) {
     );
 }
 
+/**
+ * Barra di navigazione fra le pagine dei risultati.
+ * Le figure sono gia' tutte in memoria (le ha filtrate il backend), quindi
+ * qui la paginazione serve a non riversare centinaia di card nel DOM in una
+ * volta sola: si cambia pagina senza nessuna nuova richiesta al server.
+ */
+function Paginazione({ pagina, totalePagine, onCambia }) {
+    if (totalePagine <= 1) return null;
+
+    const numeri = Array.from({ length: totalePagine }, (_, i) => i);
+
+    return (
+        <nav className="paginazione">
+            <button type="button" className="link-pagina"
+                    disabled={pagina === 0}
+                    onClick={() => onCambia(pagina - 1)}>&laquo; Precedente</button>
+
+            {numeri.map((i) => (
+                <button key={i} type="button"
+                        className={"link-pagina" + (i === pagina ? " corrente" : "")}
+                        onClick={() => onCambia(i)}>{i + 1}</button>
+            ))}
+
+            <button type="button" className="link-pagina"
+                    disabled={pagina === totalePagine - 1}
+                    onClick={() => onCambia(pagina + 1)}>Successiva &raquo;</button>
+        </nav>
+    );
+}
+
+/** Quante figure mostrare per pagina. */
+const PER_PAGINA = 12;
+
 const FILTRI_INIZIALI = {
     q: "", serieId: "", aziendaId: "", materiale: "",
     soloLimitate: false, prezzoMin: "", prezzoMax: ""
@@ -178,6 +207,7 @@ function Catalogo() {
     const [errore, setErrore] = useState(null);
     const [selezionata, setSelezionata] = useState(null);
     const [ordinamento, setOrdinamento] = useState("nome");
+    const [pagina, setPagina] = useState(0);
 
     // dati per i menu dei filtri: caricati una sola volta
     useEffect(() => {
@@ -218,6 +248,10 @@ function Catalogo() {
         return () => clearTimeout(timer);
     }, [filtri, costruisciQuery]);
 
+    // Cambiando filtri o ordinamento l'insieme dei risultati e' un altro:
+    // restare alla pagina 5 non avrebbe senso, si riparte dalla prima.
+    useEffect(() => { setPagina(0); }, [filtri, ordinamento]);
+
     const figureOrdinate = useMemo(() => {
         const copia = [...figure];
         if (ordinamento === "prezzoAsc") copia.sort((a, b) => a.prezzo - b.prezzo);
@@ -227,6 +261,13 @@ function Catalogo() {
         return copia;
     }, [figure, ordinamento]);
 
+    const totalePagine = Math.max(Math.ceil(figureOrdinate.length / PER_PAGINA), 1);
+    // Se i filtri riducono i risultati la pagina corrente puo' finire fuori
+    // dall'intervallo: la si riporta dentro invece di mostrare una griglia vuota.
+    const paginaCorrente = Math.min(pagina, totalePagine - 1);
+    const figureDellaPagina = figureOrdinate.slice(
+        paginaCorrente * PER_PAGINA, paginaCorrente * PER_PAGINA + PER_PAGINA);
+
     return (
         <div className="catalogo">
             <Filtri filtri={filtri} onCambia={setFiltri} serie={serie}
@@ -235,7 +276,10 @@ function Catalogo() {
 
             <section className="risultati">
                 <div className="barra-risultati">
-                    <span>{caricamento ? "Ricerca..." : `${figureOrdinate.length} risultati`}</span>
+                    <span>{caricamento
+                        ? "Ricerca..."
+                        : `${figureOrdinate.length} risultati` +
+                          (totalePagine > 1 ? ` - pagina ${paginaCorrente + 1} di ${totalePagine}` : "")}</span>
                     <select value={ordinamento} onChange={(e) => setOrdinamento(e.target.value)}>
                         <option value="nome">Nome (A-Z)</option>
                         <option value="prezzoAsc">Prezzo crescente</option>
@@ -249,9 +293,15 @@ function Catalogo() {
                     <p>Nessuna figure corrisponde ai filtri selezionati.</p>}
 
                 <div className="griglia">
-                    {figureOrdinate.map((f) =>
+                    {figureDellaPagina.map((f) =>
                         <SchedaFigure key={f.id} figure={f} onApri={setSelezionata} />)}
                 </div>
+
+                <Paginazione pagina={paginaCorrente} totalePagine={totalePagine}
+                             onCambia={(p) => {
+                                 setPagina(p);
+                                 window.scrollTo({ top: 0, behavior: "smooth" });
+                             }} />
             </section>
 
             {selezionata &&
