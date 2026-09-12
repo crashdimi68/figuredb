@@ -9,8 +9,7 @@
     <p class="sottotitolo">Per la ricerca con filtri usa il <a th:href="@{/catalogo}">catalogo React</a>.</p>
 
     <p class="meta" th:if="${pagina.totalElements > 0}">
-        <span th:text="${pagina.totalElements}">0</span> figure a catalogo &mdash;
-        pagina <span th:text="${pagina.number + 1}">1</span>
+        Pagina <span th:text="${pagina.number + 1}">1</span>
         di <span th:text="${pagina.totalPages}">1</span>
     </p>
 
@@ -45,6 +44,5 @@
     </nav>
 </main>
 
-<footer th:replace="~{fragments/base :: fondo}"></footer>
 </body>
 </html>

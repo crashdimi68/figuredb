@@ -64,13 +64,6 @@ public interface FigureRepository extends CrudRepository<Figure, Long>, FigureRe
 
 
 
-    /** Ultime uscite per la home page (il numero e' dato dal Pageable). */
-    @Query("select f from Figure f "
-         + "join fetch f.azienda "
-         + "join fetch f.serie "
-         + "order by f.dataUscita desc")
-    List<Figure> findUltimeUscite(Pageable pageable);
-
     /** Figure di una azienda, con serie gia' caricata. */
     @Query("select f from Figure f "
          + "join fetch f.azienda "

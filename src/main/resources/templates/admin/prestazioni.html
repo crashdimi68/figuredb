@@ -59,26 +59,6 @@
                 </tbody>
             </table>
 
-            <h2>Come leggere questi numeri</h2>
-            <p>
-                Con le associazioni <strong>LAZY</strong> la lista arriva con una query,
-                ma azienda e serie di ogni figure vengono caricate solo quando la vista
-                le legge: una SELECT per ciascuna. E' il <em>problema delle N+1 query</em>,
-                e si vede nella colonna "Query SQL".
-            </p>
-            <p>
-                <strong>JOIN FETCH</strong> e <strong>@EntityGraph</strong> risolvono lo
-                stesso caso d'uso con una sola query: il primo scrivendo il fetch join
-                nella JPQL, il secondo dichiarandolo con un'annotazione. A parita' di
-                risultato, la differenza fra i due e' solo di stile.
-            </p>
-            <p class="aiuto-campo">
-                I tempi sono misurati dal vivo su questo database e cambiano di poco a
-                ogni esecuzione. Prima di misurare viene fatto un giro di riscaldamento e
-                il persistence context viene svuotato fra una strategia e l'altra, cosi'
-                la cache di primo livello non falsa il confronto. Cio' che conta e' il
-                numero di query, che invece e' sempre lo stesso.
-            </p>
         </div>
 
         <div class="azioni">
@@ -88,6 +68,5 @@
     </div>
 </main>
 
-<footer th:replace="~{fragments/base :: fondo}"></footer>
 </body>
 </html>

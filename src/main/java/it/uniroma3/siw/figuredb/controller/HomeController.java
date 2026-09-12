@@ -4,24 +4,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import it.uniroma3.siw.figuredb.service.FigureService;
-import it.uniroma3.siw.figuredb.service.SerieService;
-
 @Controller
 public class HomeController {
 
-    private final FigureService figureService;
-    private final SerieService serieService;
-
-    public HomeController(FigureService figureService, SerieService serieService) {
-        this.figureService = figureService;
-        this.serieService = serieService;
-    }
-
+    /**
+     * Home page. E' una pagina statica di benvenuto: non interroga il
+     * database, quindi al controller non serve nessun service.
+     */
     @GetMapping({"/", "/index"})
-    public String home(Model model) {
-        model.addAttribute("ultimeUscite", this.figureService.findUltimeUscite());
-        model.addAttribute("serie", this.serieService.findAll());
+    public String home() {
         return "index";
     }
 

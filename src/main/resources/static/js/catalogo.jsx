@@ -278,8 +278,9 @@ function Catalogo() {
                 <div className="barra-risultati">
                     <span>{caricamento
                         ? "Ricerca..."
-                        : `${figureOrdinate.length} risultati` +
-                          (totalePagine > 1 ? ` - pagina ${paginaCorrente + 1} di ${totalePagine}` : "")}</span>
+                        : (figureOrdinate.length > 0
+                            ? `Pagina ${paginaCorrente + 1} di ${totalePagine}`
+                            : "")}</span>
                     <select value={ordinamento} onChange={(e) => setOrdinamento(e.target.value)}>
                         <option value="nome">Nome (A-Z)</option>
                         <option value="prezzoAsc">Prezzo crescente</option>

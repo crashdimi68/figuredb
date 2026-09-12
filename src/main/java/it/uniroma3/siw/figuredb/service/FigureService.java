@@ -95,11 +95,6 @@ public class FigureService {
     }
 
     @Transactional(readOnly = true)
-    public List<Figure> findUltimeUscite() {
-        return this.figureRepository.findUltimeUscite(PageRequest.of(0, 8));
-    }
-
-    @Transactional(readOnly = true)
     public List<Figure> findEdizioniLimitate() {
         return this.figureRepository.findEdizioniLimitate();
     }
