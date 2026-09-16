@@ -1,6 +1,8 @@
 package it.uniroma3.siw.figuredb.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

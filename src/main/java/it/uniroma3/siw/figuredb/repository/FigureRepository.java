@@ -118,6 +118,4 @@ public interface FigureRepository extends CrudRepository<Figure, Long>, FigureRe
     @Query("select f from Figure f where f.serie.id = :serieId")
     List<Figure> findBySerieIdConEntityGraph(@Param("serieId") Long serieId);
 
-   
-    
 }
